@@ -90,6 +90,19 @@ function typeLabel(type) {
   background: #ffffff;
   border-radius: 0.75rem;
   border: 1px solid #e5e7eb;
+  border-left-width: 4px;
+}
+
+.transaction-item--income {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  border-left-color: #10b981;
+}
+
+.transaction-item--expense {
+  background: #fff5f5;
+  border-color: #fecaca;
+  border-left-color: #ef4444;
 }
 
 .transaction-item__top {
@@ -110,12 +123,12 @@ function typeLabel(type) {
 }
 
 .transaction-item--income .transaction-type {
-  background: #ecfdf5;
+  background: #d1fae5;
   color: #047857;
 }
 
 .transaction-item--expense .transaction-type {
-  background: #fef2f2;
+  background: #fee2e2;
   color: #b91c1c;
 }
 
@@ -134,11 +147,11 @@ function typeLabel(type) {
 }
 
 .transaction-item--income .transaction-amount {
-  color: #047857;
+  color: #059669;
 }
 
 .transaction-item--expense .transaction-amount {
-  color: #111827;
+  color: #dc2626;
 }
 
 .transaction-category {
