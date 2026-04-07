@@ -5,8 +5,28 @@ import seed from '../../db.json'
 export const useTransactionStore = defineStore('transaction', () => {
   const transactions = ref(seed.transactions.map((t) => ({ ...t })))
 
+  /** YYYY-MM-DD, null이면 해당 끝 미적용 */
+  const filterDateFrom = ref(null)
+  const filterDateTo = ref(null)
+  /** 비어 있으면 카테고리 제한 없음. 값이 있으면 해당 이름만 */
+  const filterCategoryNames = ref([])
+
+  const filteredTransactions = computed(() =>
+    transactions.value.filter((tx) => {
+      if (filterDateFrom.value && tx.date < filterDateFrom.value) return false
+      if (filterDateTo.value && tx.date > filterDateTo.value) return false
+      if (
+        filterCategoryNames.value.length > 0 &&
+        !filterCategoryNames.value.includes(tx.category)
+      ) {
+        return false
+      }
+      return true
+    }),
+  )
+
   const sortedByDateDesc = computed(() =>
-    [...transactions.value].sort((a, b) => {
+    [...filteredTransactions.value].sort((a, b) => {
       const byDate = b.date.localeCompare(a.date)
       if (byDate !== 0) return byDate
       return String(b.id).localeCompare(String(a.id), undefined, { numeric: true })
@@ -27,14 +47,40 @@ export const useTransactionStore = defineStore('transaction', () => {
     return sections
   })
 
+  const hasDateFilter = computed(
+    () => filterDateFrom.value != null || filterDateTo.value != null,
+  )
+
+  const hasCategoryFilter = computed(() => filterCategoryNames.value.length > 0)
+
+  function applyTransactionFilters({ dateFrom, dateTo, categoryNames }) {
+    filterDateFrom.value = dateFrom || null
+    filterDateTo.value = dateTo || null
+    filterCategoryNames.value = Array.isArray(categoryNames) ? [...categoryNames] : []
+  }
+
+  function clearTransactionFilters() {
+    filterDateFrom.value = null
+    filterDateTo.value = null
+    filterCategoryNames.value = []
+  }
+
   function setTransactions(rows) {
     transactions.value = Array.isArray(rows) ? [...rows] : []
   }
 
   return {
     transactions,
+    filterDateFrom,
+    filterDateTo,
+    filterCategoryNames,
+    filteredTransactions,
     sortedByDateDesc,
     groupedByDateDesc,
+    hasDateFilter,
+    hasCategoryFilter,
+    applyTransactionFilters,
+    clearTransactionFilters,
     setTransactions,
   }
 })

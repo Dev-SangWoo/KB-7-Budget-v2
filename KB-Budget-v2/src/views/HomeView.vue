@@ -1,20 +1,36 @@
 <script setup>
-import Transaction from '@/components/Transaction.vue';
+import { ref } from 'vue'
+import Filter from '@/components/Filter.vue'
+import FilterModal from '@/components/FilterModal.vue'
+import Transaction from '@/components/Transaction.vue'
 
+const filterModalOpen = ref(false)
+const filterFocusSection = ref('date')
+
+function openFilter(section) {
+  filterFocusSection.value = section
+  filterModalOpen.value = true
+}
 </script>
 
 <template>
-  <div class="home-placeholder">
-    <p>여기에 가계부 화면을 연결하면 됩니다.</p>
-    <Transaction/>
+  <div class="home">
+    <Filter
+      @open-date="openFilter('date')"
+      @open-category="openFilter('category')"
+    />
+    <Transaction />
+    <FilterModal
+      v-model="filterModalOpen"
+      :focus-section="filterFocusSection"
+    />
   </div>
 </template>
 
 <style scoped>
-.home-placeholder {
-  padding: 1.25rem 1rem;
-  color: #6b7280;
-  font-size: 0.875rem;
-  line-height: 1.5;
+.home {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>
