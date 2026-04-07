@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+import AppTabBar from '../components/AppTabBar.vue'
+</script>
 
 <template>
   <div class="app-root">
@@ -9,6 +11,7 @@
       <main class="app-main">
         <RouterView />
       </main>
+      <AppTabBar />
     </div>
   </div>
 </template>
