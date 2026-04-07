@@ -3,7 +3,17 @@ import { storeToRefs } from 'pinia'
 import { useTransactionStore } from '@/stores/transaction'
 
 const transactionStore = useTransactionStore()
-const { sortedByDateDesc } = storeToRefs(transactionStore)
+const { groupedByDateDesc } = storeToRefs(transactionStore)
+
+function formatSectionDate(isoDate) {
+  const d = new Date(`${isoDate}T12:00:00`)
+  return new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short',
+  }).format(d)
+}
 
 function formatAmount(amount, type) {
   const n = new Intl.NumberFormat('ko-KR').format(amount)
@@ -17,24 +27,34 @@ function typeLabel(type) {
 
 <template>
   <section class="transaction" aria-label="거래 내역">
-    <ul v-if="sortedByDateDesc.length" class="transaction-list">
-      <li
-        v-for="tx in sortedByDateDesc"
-        :key="tx.id"
-        class="transaction-item"
-        :class="`transaction-item--${tx.type}`"
+    <template v-if="groupedByDateDesc.length">
+      <div
+        v-for="group in groupedByDateDesc"
+        :key="group.date"
+        class="transaction-day"
       >
-        <div class="transaction-item__top">
-          <time class="transaction-date" :datetime="tx.date">{{ tx.date }}</time>
-          <span class="transaction-type">{{ typeLabel(tx.type) }}</span>
-        </div>
-        <div class="transaction-item__body">
-          <span class="transaction-amount">{{ formatAmount(tx.amount, tx.type) }}</span>
-          <span class="transaction-category">{{ tx.category }}</span>
-        </div>
-        <p v-if="tx.memo" class="transaction-memo">{{ tx.memo }}</p>
-      </li>
-    </ul>
+        <h2 class="transaction-day__heading">
+          <time :datetime="group.date">{{ formatSectionDate(group.date) }}</time>
+        </h2>
+        <ul class="transaction-list">
+          <li
+            v-for="tx in group.items"
+            :key="tx.id"
+            class="transaction-item"
+            :class="`transaction-item--${tx.type}`"
+          >
+            <div class="transaction-item__top">
+              <span class="transaction-type">{{ typeLabel(tx.type) }}</span>
+            </div>
+            <div class="transaction-item__body">
+              <span class="transaction-amount">{{ formatAmount(tx.amount, tx.type) }}</span>
+              <span class="transaction-category">{{ tx.category }}</span>
+            </div>
+            <p v-if="tx.memo" class="transaction-memo">{{ tx.memo }}</p>
+          </li>
+        </ul>
+      </div>
+    </template>
     <p v-else class="transaction-empty">거래 내역이 없습니다.</p>
   </section>
 </template>
@@ -42,6 +62,18 @@ function typeLabel(type) {
 <style scoped>
 .transaction {
   padding: 0 1rem 1rem;
+}
+
+.transaction-day + .transaction-day {
+  margin-top: 1.25rem;
+}
+
+.transaction-day__heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #374151;
+  letter-spacing: -0.02em;
 }
 
 .transaction-list {
@@ -63,14 +95,9 @@ function typeLabel(type) {
 .transaction-item__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.5rem;
   margin-bottom: 0.375rem;
-}
-
-.transaction-date {
-  font-size: 0.75rem;
-  color: #6b7280;
 }
 
 .transaction-type {
