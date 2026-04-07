@@ -1,8 +1,12 @@
-<script setup></script>
+<script setup>
+import Transaction from '@/components/Transaction.vue';
+
+</script>
 
 <template>
   <div class="home-placeholder">
     <p>여기에 가계부 화면을 연결하면 됩니다.</p>
+    <Transaction/>
   </div>
 </template>
 
