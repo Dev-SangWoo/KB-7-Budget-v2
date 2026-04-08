@@ -1,7 +1,7 @@
 <template>
   <div class="calendar">
     <!-- 월 네비게이션 -->
-    <div class="calendar-header">
+    <div v-if="showMonthNav" class="calendar-header">
       <button @click="previousMonth" class="nav-btn">←</button>
       <h2 class="month-year">{{ monthYear }}</h2>
       <button @click="nextMonth" class="nav-btn">→</button>
@@ -64,15 +64,32 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useCalendarStore } from '../stores/calendar';
 import { useTransactionStore } from '@/stores/transaction';
+
+const props = defineProps({
+  month: {
+    type: String,
+    default: '',
+  },
+  showMonthNav: {
+    type: Boolean,
+    default: true,
+  },
+})
+
+const emit = defineEmits(['update:month'])
 
 const transactionStore = useTransactionStore();
 const calendarStore = useCalendarStore();
 
-const currentYear = ref(new Date().getFullYear());
-const currentMonth = ref(new Date().getMonth() + 1);
+const initialMonth = props.month && /^\d{4}-\d{2}$/.test(props.month)
+  ? props.month
+  : new Date().toISOString().slice(0, 7)
+const [initialYear, initialMon] = initialMonth.split('-').map(Number)
+const currentYear = ref(initialYear);
+const currentMonth = ref(initialMon);
 
 const monthYear = computed(() => {
   const date = new Date(currentYear.value, currentMonth.value - 1);
@@ -142,6 +159,7 @@ function previousMonth() {
   } else {
     currentMonth.value--;
   }
+  emitCurrentMonth();
 }
 
 function nextMonth() {
@@ -151,6 +169,7 @@ function nextMonth() {
   } else {
     currentMonth.value++;
   }
+  emitCurrentMonth();
 }
 
 function selectDate(day) {
@@ -164,6 +183,12 @@ function goToToday() {
   currentYear.value = today.getFullYear();
   currentMonth.value = today.getMonth() + 1;
   calendarStore.setSelectedDate(today);
+  emitCurrentMonth();
+}
+
+function emitCurrentMonth() {
+  const ym = `${currentYear.value}-${String(currentMonth.value).padStart(2, '0')}`;
+  emit('update:month', ym);
 }
 
 // day 객체를 'YYYY-MM-DD' 문자열로 변환 (transactionsByDate의 key 형식과 맞춤)
@@ -172,6 +197,17 @@ function toDateKey(day) {
   const dd = String(day.date).padStart(2, '0');
   return `${day.year}-${mm}-${dd}`;
 }
+
+watch(
+  () => props.month,
+  (next) => {
+    if (!next || !/^\d{4}-\d{2}$/.test(next)) return;
+    const [y, m] = next.split('-').map(Number);
+    if (y === currentYear.value && m === currentMonth.value) return;
+    currentYear.value = y;
+    currentMonth.value = m;
+  },
+);
 </script>
 
 <style scoped>

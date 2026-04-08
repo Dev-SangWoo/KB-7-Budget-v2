@@ -1,5 +1,5 @@
 <script setup>
-import Calendar from '@/components/Calendar.vue';
+import Calendar from '@/components/Calendar.vue'
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTransactionStore } from '@/stores/transaction'
@@ -58,27 +58,28 @@ watch(selectedMonth, () => {
 </script>
 
 <template>
-  <div class="page-placeholder">
-    
-    <section class="stats-page">
-    <StatsMonthNav v-model="selectedMonth" />
+  <div class="stats-page">
+    <section class="stats-panel">
+      <StatsMonthNav v-model="selectedMonth" />
 
-    <StatsSummaryStrip
-      :income-label="formatWon(incomeTotal)"
-      :expense-label="formatWon(expenseTotal)"
-      :net-label="formatNetWon(netTotal)"
-    />
+      <StatsIncomeExpenseTabs
+        v-model:active-tab="activeTab"
+        :income-label="formatWon(incomeTotal)"
+        :expense-label="formatWon(expenseTotal)"
+      />
 
-    <StatsIncomeExpenseTabs
-      v-model:active-tab="activeTab"
-      :income-label="formatWon(incomeTotal)"
-      :expense-label="formatWon(expenseTotal)"
-    />
+      <StatsCategoryPieChart :slices="categoryTotalsForTab" :empty-hint="emptyHint" :size="300" />
 
-    <StatsCategoryPieChart :slices="categoryTotalsForTab" :empty-hint="emptyHint" :size="300" />
-  </div>
-  <div>
-    <Calendar />
+      <StatsSummaryStrip
+        :income-label="formatWon(incomeTotal)"
+        :expense-label="formatWon(expenseTotal)"
+        :net-label="formatNetWon(netTotal)"
+      />
+    </section>
+
+    <section class="calendar-panel">
+      <Calendar v-model:month="selectedMonth" :show-month-nav="false" />
+    </section>
   </div>
 </template>
 
@@ -86,8 +87,12 @@ watch(selectedMonth, () => {
 .stats-page {
   max-width: 430px;
   margin: 0 auto;
-  padding: 0.5rem 0.75rem 0.75rem;
+  padding: 0.2rem 0.65rem 0.35rem;
   background: #fff;
   box-sizing: border-box;
+}
+
+.stats-panel {
+  margin-bottom: -0.35rem;
 }
 </style>
