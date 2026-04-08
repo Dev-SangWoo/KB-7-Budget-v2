@@ -8,8 +8,8 @@ import AddTransactionFab from '@/components/AddTransactionFab.vue'
 import ReceiptPledge from '@/components/ReceiptPledge.vue'
 import BudgetPanel from '@/components/BudgetPanel.vue';       // 플렉스형
 import SocialCustomTab from '@/components/SocialCustomTab.vue'; // 사회형
-// import DripPanel from '@/components/DripPanel.vue'       // 가랑비형
-import { useUserStore } from '@/stores/user'
+import DrizzleType from '@/components/DrizzleType.vue';      // 보슬비형
+import { useUserStore } from '@/stores/user';
 import { useTransactionStore } from '@/stores/transaction';
 
 const userStore = useUserStore();
@@ -24,7 +24,7 @@ const TYPE_COMPONENT_MAP = {
   '계획형': ReceiptPledge,
   '플렉스형': BudgetPanel,   // FlexPanel
   '사회형': SocialCustomTab,   
-  '보슬비비형': null,   // DripPanel
+  '보슬비비형': DrizzleType,   // DripPanel
 }
 
 const typeComponent = computed(() =>
