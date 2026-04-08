@@ -87,12 +87,22 @@ watch(selectedMonth, () => {
 .stats-page {
   max-width: 430px;
   margin: 0 auto;
-  padding: 0.2rem 0.65rem 0.35rem;
-  background: #fff;
+  padding: 0.75rem 0.65rem 1rem;
+  background: var(--color-bg-page);
   box-sizing: border-box;
+  min-height: 100%;
 }
 
 .stats-panel {
-  margin-bottom: -0.35rem;
+  margin-bottom: 0.75rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-card);
+  padding: 0.5rem 0.5rem 0.25rem;
+}
+
+.calendar-panel {
+  margin-top: 0.25rem;
 }
 </style>
