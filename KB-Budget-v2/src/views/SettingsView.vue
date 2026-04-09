@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { LogOut, Check, Save } from 'lucide-vue-next';
+import { LogOut, Check, Save, Plus, Trash2 } from 'lucide-vue-next';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -19,8 +19,18 @@ const SPENDING_TYPES = [
 const selectedType = ref(currentUser.value?.spendingType ?? '계획형');
 const editIncome = ref('');
 const editBudget = ref('');
+const editFixedItems = ref([]);
 const isSaving = ref(false);
 const saveSuccess = ref(false);
+
+function cloneItems(items) {
+  if (!Array.isArray(items) || items.length === 0) return [];
+  return items.map((i) => ({
+    id: i.id,
+    name: i.name ?? '',
+    amount: i.amount ? String(i.amount) : '',
+  }));
+}
 
 function initFields() {
   if (!currentUser.value) return;
@@ -31,6 +41,7 @@ function initFields() {
   editBudget.value = currentUser.value.monthlyBudget
     ? String(currentUser.value.monthlyBudget)
     : '';
+  editFixedItems.value = cloneItems(currentUser.value.fixedItems);
 }
 initFields();
 watch(currentUser, initFields);
@@ -44,22 +55,50 @@ function parseNum(val) {
   return isNaN(n) || n === 0 ? null : n;
 }
 
+function itemsChanged() {
+  const cur = currentUser.value?.fixedItems ?? [];
+  const edit = editFixedItems.value;
+  if (cur.length !== edit.length) return true;
+  return cur.some((c, i) => {
+    const e = edit[i];
+    return c.name !== (e.name ?? '') || c.amount !== (parseNum(e.amount) ?? 0);
+  });
+}
+
 const hasChanges = computed(() => {
   if (!currentUser.value) return false;
   if (selectedType.value !== currentUser.value.spendingType) return true;
   if (parseNum(editIncome.value) !== (currentUser.value.expectedIncome ?? null)) return true;
   if (parseNum(editBudget.value) !== (currentUser.value.monthlyBudget ?? null)) return true;
+  if (showIncomeField.value && itemsChanged()) return true;
   return false;
 });
+
+function addFixedItem() {
+  editFixedItems.value.push({ id: Date.now().toString(), name: '', amount: '' });
+}
+
+function removeFixedItem(id) {
+  editFixedItems.value = editFixedItems.value.filter((i) => i.id !== id);
+}
 
 async function handleSave() {
   if (!hasChanges.value || isSaving.value) return;
   isSaving.value = true;
 
+  const fixedItems = editFixedItems.value
+    .filter((i) => i.name.trim())
+    .map((i) => ({
+      id: i.id,
+      name: i.name.trim(),
+      amount: Number(String(i.amount).replace(/,/g, '')) || 0,
+    }));
+
   const fields = {
     spendingType: selectedType.value,
     expectedIncome: parseNum(editIncome.value),
     monthlyBudget: parseNum(editBudget.value),
+    fixedItems,
   };
 
   const ok = await userStore.updateProfile(fields);
@@ -186,6 +225,51 @@ function formatAmount(val) {
         >
           현재 설정: {{ formatAmount(currentUser.monthlyBudget) }}
         </p>
+      </div>
+    </Transition>
+
+    <!-- 계획형 고정 지출 항목 -->
+    <Transition name="fade" mode="out-in">
+      <div v-if="showIncomeField" class="card" key="fixed-items">
+        <p class="card__label">고정 지출 항목</p>
+        <p class="card__desc">매달 고정으로 나가는 지출을 미리 등록하세요</p>
+
+        <div class="fixed-list">
+          <div
+            v-for="item in editFixedItems"
+            :key="item.id"
+            class="fixed-item"
+          >
+            <input
+              v-model="item.name"
+              class="fixed-item__name"
+              placeholder="항목명"
+              maxlength="8"
+            />
+            <div class="fixed-item__amount-wrap">
+              <input
+                v-model="item.amount"
+                class="fixed-item__amount"
+                type="number"
+                inputmode="numeric"
+                placeholder="0"
+              />
+              <span class="fixed-item__unit">원</span>
+            </div>
+            <button
+              class="fixed-item__remove"
+              @click="removeFixedItem(item.id)"
+              aria-label="삭제"
+            >
+              <Trash2 :size="14" :stroke-width="2" />
+            </button>
+          </div>
+
+          <button class="fixed-add-btn" @click="addFixedItem">
+            <Plus :size="14" :stroke-width="2.5" />
+            항목 추가
+          </button>
+        </div>
       </div>
     </Transition>
 
@@ -403,6 +487,123 @@ function formatAmount(val) {
   margin: 0.5rem 0 0;
   font-size: 0.75rem;
   color: var(--color-text-muted);
+}
+
+/* ── 고정 지출 항목 ── */
+.fixed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fixed-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fixed-item__name {
+  width: 5.5rem;
+  flex-shrink: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input, 12px);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg-page);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.fixed-item__name:focus {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.fixed-item__amount-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.fixed-item__amount {
+  width: 100%;
+  padding: 0.6rem 2rem 0.6rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input, 12px);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg-page);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.fixed-item__amount:focus {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.fixed-item__amount::-webkit-inner-spin-button,
+.fixed-item__amount::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.fixed-item__unit {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.fixed-item__remove {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-subtle, #f5f5f5);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.fixed-item__remove:hover {
+  background: rgba(220, 38, 38, 0.06);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #dc2626;
+}
+
+.fixed-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.6rem;
+  background: transparent;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-input, 12px);
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fixed-add-btn:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  background: rgba(245, 158, 11, 0.04);
 }
 
 /* ── 저장 버튼 ── */

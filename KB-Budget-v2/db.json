@@ -181,7 +181,24 @@
       "totalAmount": 3200000,
       "spendingType": "계획형",
       "expectedIncome": 3200000,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": [
+        {
+          "id": "1",
+          "name": "주거비",
+          "amount": 500000
+        },
+        {
+          "id": "2",
+          "name": "교통비",
+          "amount": 100000
+        },
+        {
+          "id": "3",
+          "name": "통신비",
+          "amount": 50000
+        }
+      ]
     },
     {
       "id": "2",
@@ -191,7 +208,8 @@
       "totalAmount": 1800000,
       "spendingType": "플렉스형",
       "expectedIncome": null,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": []
     },
     {
       "id": "3",
@@ -201,7 +219,8 @@
       "totalAmount": 2100000,
       "spendingType": "계획형",
       "expectedIncome": null,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": []
     },
     {
       "id": "4",
@@ -211,7 +230,8 @@
       "totalAmount": 950000,
       "spendingType": "보슬비형",
       "expectedIncome": null,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": []
     },
     {
       "totalAmount": 0,
@@ -221,6 +241,13 @@
       "password": "12",
       "username": "12",
       "spendingType": "계획형",
+      "fixedItems": [
+        {
+          "id": "1775712635041",
+          "name": "123",
+          "amount": 12312
+        }
+      ],
       "id": "jKQN6Cd"
     },
     {
@@ -231,6 +258,7 @@
       "password": "123",
       "username": "1233",
       "spendingType": "플렉스형",
+      "fixedItems": [],
       "id": "p_kmuHJ"
     }
   ]

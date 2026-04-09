@@ -53,6 +53,7 @@ export const useUserStore = defineStore('user', () => {
         totalAmount: 0,
         expectedIncome: null,
         monthlyBudget: null,
+        fixedItems: [],
         ...payload,
       });
       currentUser.value = newUser;
