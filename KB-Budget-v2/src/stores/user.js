@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { fetchUserByLoginId, createUser } from '../api/users'
+import { fetchUserByLoginId, createUser, updateUser } from '../api/users'
 
 export const useUserStore = defineStore('user', () => {
   const currentUser = ref(null)
@@ -63,11 +63,24 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  async function updateProfile(fields) {
+    if (!currentUser.value) return false
+    try {
+      const updated = await updateUser(currentUser.value.id, fields)
+      currentUser.value = updated
+      return true
+    } catch (e) {
+      console.error(e)
+      return false
+    }
+  }
+
   return {
     currentUser,
     loginError,
     login,
     logout,
     signup,
+    updateProfile,
   }
 })
