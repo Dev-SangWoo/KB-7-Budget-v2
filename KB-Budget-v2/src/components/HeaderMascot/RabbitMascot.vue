@@ -55,7 +55,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- 토끼 마스코트 -->
+  <!-- 토끼 마스코트 (보슬비형) -->
   <div ref="mascotEl" class="mascot" aria-hidden="true">
     <img :src="rabbitImg" class="mascot__img" alt="" draggable="false" />
   </div>
