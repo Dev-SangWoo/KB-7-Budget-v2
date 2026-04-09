@@ -269,6 +269,28 @@
       "spendingType": "플렉스형",
       "fixedItems": [],
       "id": "p_kmuHJ"
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": [],
+      "loginId": "dd",
+      "password": "dd",
+      "username": "d",
+      "spendingType": "사회형",
+      "id": "_2KKIOU"
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": [],
+      "loginId": "ddd",
+      "password": "dd",
+      "username": "d",
+      "spendingType": null,
+      "id": "AkRLkHH"
     }
   ]
 }
