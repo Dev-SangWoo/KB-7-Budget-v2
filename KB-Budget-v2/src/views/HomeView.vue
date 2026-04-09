@@ -47,8 +47,8 @@ const currentMonth = computed(() => {
   return `${year}-${month}`;
 });
 
-function openFilter(section) {
-  filterFocusSection.value = section;
+function openFilter() {
+  filterFocusSection.value = 'date';
   filterModalOpen.value = true;
 }
 
@@ -89,12 +89,11 @@ const filteredGroupedData = computed(() => {
     <!-- 유형별 전용 패널 -->
     <component :is="typeComponent" v-if="typeComponent" @filter-social="handleSocialFilter"  />
 
-    <Filter
-      @open-date="openFilter('date')"
-      @open-category="openFilter('category')"
-    />
     <!-- 거래 내역 (현재 달만 표시) -->
-    <Transaction :list="filteredGroupedData" />
+    <div class="tx-section">
+      <Filter @open-filter="openFilter" />
+      <Transaction :list="filteredGroupedData" />
+    </div>
     <!-- 필터 모달 -->
     <FilterModal
       v-model="filterModalOpen"
@@ -107,10 +106,20 @@ const filteredGroupedData = computed(() => {
 
 <style scoped>
 .home {
-  /* app-main의 스크롤 영역을 자연스럽게 채움 */
   display: flex;
   flex-direction: column;
   padding: 1rem 0 1.25rem;
   background: var(--color-bg-page);
+}
+
+.tx-section {
+  position: relative;
+}
+
+.tx-section :deep(.filter-btn) {
+  position: absolute;
+  right: 1rem;
+  top: 0.65rem;
+  z-index: 5;
 }
 </style>

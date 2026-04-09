@@ -98,6 +98,15 @@
       "category": "생활용품",
       "memo": "",
       "id": "DF7NBlR"
+    },
+    {
+      "userId": "jKQN6Cd",
+      "type": "expense",
+      "date": "2026-04-09",
+      "amount": 12312,
+      "category": "문화생활",
+      "memo": "12312",
+      "id": "CWVwHHl"
     }
   ],
   "categories": [
@@ -179,9 +188,26 @@
       "username": "이계획",
       "password": "demo1111",
       "totalAmount": 3200000,
-      "spendingType": "보슬비형",
+      "spendingType": "계획형",
       "expectedIncome": 3200000,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": [
+        {
+          "id": "1",
+          "name": "주거비",
+          "amount": 500000
+        },
+        {
+          "id": "2",
+          "name": "교통비",
+          "amount": 100000
+        },
+        {
+          "id": "3",
+          "name": "통신비",
+          "amount": 50000
+        }
+      ]
     },
     {
       "id": "2",
@@ -189,7 +215,10 @@
       "username": "박플렉스",
       "password": "demo2222",
       "totalAmount": 1800000,
-      "spendingType": "플렉스형"
+      "spendingType": "플렉스형",
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": []
     },
     {
       "id": "3",
@@ -199,7 +228,8 @@
       "totalAmount": 2100000,
       "spendingType": "계획형",
       "expectedIncome": null,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": []
     },
     {
       "id": "4",
@@ -209,7 +239,36 @@
       "totalAmount": 950000,
       "spendingType": "보슬비형",
       "expectedIncome": null,
-      "monthlyBudget": null
+      "monthlyBudget": null,
+      "fixedItems": []
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": 12312,
+      "monthlyBudget": 11231,
+      "loginId": "12",
+      "password": "12",
+      "username": "12",
+      "spendingType": "계획형",
+      "fixedItems": [
+        {
+          "id": "1775712635041",
+          "name": "123",
+          "amount": 12312
+        }
+      ],
+      "id": "jKQN6Cd"
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "loginId": "123",
+      "password": "123",
+      "username": "1233",
+      "spendingType": "플렉스형",
+      "fixedItems": [],
+      "id": "p_kmuHJ"
     }
   ]
 }

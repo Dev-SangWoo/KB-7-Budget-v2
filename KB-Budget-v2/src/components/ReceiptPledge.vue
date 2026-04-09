@@ -32,13 +32,17 @@ function loadPlan() {
   if (saved) {
     plan.value = JSON.parse(saved)
   } else {
+    const userItems = currentUser.value?.fixedItems
+    const hasUserItems = Array.isArray(userItems) && userItems.length > 0
     plan.value = {
       expectedIncome: Number(currentUser.value?.expectedIncome) || 0,
-      fixedItems: [
-        { id: '1', name: '주거비', amount: 0 },
-        { id: '2', name: '교통비', amount: 0 },
-        { id: '3', name: '통신비', amount: 0 },
-      ],
+      fixedItems: hasUserItems
+        ? userItems.map((i) => ({ ...i, amount: Number(i.amount) || 0 }))
+        : [
+            { id: '1', name: '주거비', amount: 0 },
+            { id: '2', name: '교통비', amount: 0 },
+            { id: '3', name: '통신비', amount: 0 },
+          ],
     }
   }
 }
@@ -104,18 +108,24 @@ function removeItem(id) {
   editItems.value = editItems.value.filter((i) => i.id !== id)
 }
 
-function save() {
-  plan.value = {
-    expectedIncome: Number(String(editIncome.value).replace(/,/g, '')) || 0,
-    fixedItems: editItems.value
-      .filter((i) => i.name.trim())
-      .map((i) => ({
-        id: i.id,
-        name: i.name.trim(),
-        amount: Number(String(i.amount).replace(/,/g, '')) || 0,
-      })),
-  }
+async function save() {
+  const income = Number(String(editIncome.value).replace(/,/g, '')) || 0
+  const items = editItems.value
+    .filter((i) => i.name.trim())
+    .map((i) => ({
+      id: i.id,
+      name: i.name.trim(),
+      amount: Number(String(i.amount).replace(/,/g, '')) || 0,
+    }))
+
+  plan.value = { expectedIncome: income, fixedItems: items }
   localStorage.setItem(PLAN_KEY.value, JSON.stringify(plan.value))
+
+  await userStore.updateProfile({
+    expectedIncome: income,
+    fixedItems: items,
+  })
+
   isEditing.value = false
 }
 
