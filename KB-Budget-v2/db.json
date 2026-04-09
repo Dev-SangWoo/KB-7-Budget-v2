@@ -98,6 +98,15 @@
       "category": "생활용품",
       "memo": "",
       "id": "DF7NBlR"
+    },
+    {
+      "userId": "jKQN6Cd",
+      "type": "expense",
+      "date": "2026-04-09",
+      "amount": 12312,
+      "category": "문화생활",
+      "memo": "12312",
+      "id": "CWVwHHl"
     }
   ],
   "categories": [
