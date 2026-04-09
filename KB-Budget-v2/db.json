@@ -206,6 +206,11 @@
           "id": "3",
           "name": "통신비",
           "amount": 50000
+        },
+        {
+          "id": "1775713396298",
+          "name": "test",
+          "amount": 1234
         }
       ]
     },
@@ -275,22 +280,22 @@
       "expectedIncome": null,
       "monthlyBudget": null,
       "fixedItems": [],
-      "loginId": "dd",
-      "password": "dd",
-      "username": "d",
-      "spendingType": "사회형",
-      "id": "_2KKIOU"
+      "loginId": "00",
+      "password": "00",
+      "username": "00",
+      "spendingType": "플렉스형",
+      "id": "4_XgQ5q"
     },
     {
       "totalAmount": 0,
       "expectedIncome": null,
       "monthlyBudget": null,
       "fixedItems": [],
-      "loginId": "ddd",
-      "password": "dd",
-      "username": "d",
+      "loginId": "1234",
+      "password": "1234",
+      "username": "1234",
       "spendingType": null,
-      "id": "AkRLkHH"
+      "id": "jIorRpy"
     }
   ]
 }
