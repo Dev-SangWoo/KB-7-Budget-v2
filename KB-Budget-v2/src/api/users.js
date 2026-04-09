@@ -15,3 +15,7 @@ export function fetchUserByLoginId(loginId) {
 export function createUser(payload) {
   return client.post('/users', payload).then((res) => res.data)
 }
+
+export function updateUser(id, payload) {
+  return client.patch(`/users/${id}`, payload).then((res) => res.data)
+}

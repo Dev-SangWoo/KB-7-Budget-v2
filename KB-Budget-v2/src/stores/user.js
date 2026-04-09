@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchUserByLoginId, createUser } from '../api/users';
+import { fetchUserByLoginId, createUser, updateUser } from '../api/users';
 
 export const useUserStore = defineStore('user', () => {
   const currentUser = ref(null);
@@ -49,11 +49,28 @@ export const useUserStore = defineStore('user', () => {
         loginError.value = '이미 사용 중인 아이디입니다.';
         return false;
       }
-      const newUser = await createUser(payload);
+      const newUser = await createUser({
+        totalAmount: 0,
+        expectedIncome: null,
+        monthlyBudget: null,
+        ...payload,
+      });
       currentUser.value = newUser;
       return true;
     } catch (e) {
       loginError.value = '회원가입 중 오류가 발생했습니다.';
+      console.error(e);
+      return false;
+    }
+  }
+
+  async function updateProfile(fields) {
+    if (!currentUser.value) return false;
+    try {
+      const updated = await updateUser(currentUser.value.id, fields);
+      currentUser.value = updated;
+      return true;
+    } catch (e) {
       console.error(e);
       return false;
     }
@@ -65,5 +82,6 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     signup,
+    updateProfile,
   };
 });
