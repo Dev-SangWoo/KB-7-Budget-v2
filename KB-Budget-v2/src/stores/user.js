@@ -1,8 +1,8 @@
-import { ref } from 'vue';
-import { defineStore } from 'pinia';
-import { fetchUserByLoginId, createUser, updateUser } from '../api/users';
+import { ref } from "vue";
+import { defineStore } from "pinia";
+import { fetchUserByLoginId, createUser, updateUser } from "../api/users";
 
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore("user", () => {
   const currentUser = ref(null);
   const loginError = ref(null);
 
@@ -17,13 +17,13 @@ export const useUserStore = defineStore('user', () => {
     try {
       const user = await fetchUserByLoginId(loginId);
       if (!user || user.password !== password) {
-        loginError.value = '아이디 또는 비밀번호가 올바르지 않습니다.';
+        loginError.value = "아이디 또는 비밀번호가 올바르지 않습니다.";
         return false;
       }
       currentUser.value = user;
       return true;
     } catch (e) {
-      loginError.value = '로그인 중 오류가 발생했습니다.';
+      loginError.value = "로그인 중 오류가 발생했습니다.";
       console.error(e);
       return false;
     }
@@ -43,10 +43,16 @@ export const useUserStore = defineStore('user', () => {
   async function signup(payload) {
     loginError.value = null;
     try {
+      // 아이디가 숫자로만 구성되어 있는지 확인
+      if (/^\d+$/.test(payload.loginId)) {
+        loginError.value = "숫자만으로는 아이디를 만들 수 없습니다.";
+        return false;
+      }
+
       // 아이디 중복 확인
       const existing = await fetchUserByLoginId(payload.loginId);
       if (existing) {
-        loginError.value = '이미 사용 중인 아이디입니다.';
+        loginError.value = "이미 사용 중인 아이디입니다.";
         return false;
       }
       const newUser = await createUser({
@@ -59,7 +65,7 @@ export const useUserStore = defineStore('user', () => {
       currentUser.value = newUser;
       return true;
     } catch (e) {
-      loginError.value = '회원가입 중 오류가 발생했습니다.';
+      loginError.value = "회원가입 중 오류가 발생했습니다.";
       console.error(e);
       return false;
     }
