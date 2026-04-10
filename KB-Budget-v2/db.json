@@ -118,29 +118,11 @@
       "id": "PcZ7y6f"
     },
     {
-      "userId": "jIorRpy",
+      "userId": "4rjM292",
       "type": "expense",
       "date": "2026-04-10",
-      "amount": 20000,
-      "category": "기타",
-      "memo": "",
-      "id": "58miHjl"
-    },
-    {
-      "userId": "jIorRpy",
-      "type": "expense",
-      "date": "2026-04-10",
-      "amount": 40000,
-      "category": "기타",
-      "memo": "",
-      "id": "b5N_pAa"
-    },
-    {
-      "userId": "jIorRpy",
-      "type": "income",
-      "date": "2026-04-10",
-      "amount": 200000,
-      "category": "기타",
+      "amount": 54564,
+      "category": "선물",
       "memo": "df",
       "id": "elDhnxn"
     },
@@ -335,6 +317,17 @@
       "username": "ㅇㅇ",
       "spendingType": "계획형",
       "id": "-ehQ2va"
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": [],
+      "loginId": "d",
+      "password": "d",
+      "username": "d",
+      "spendingType": "플렉스형",
+      "id": "4rjM292"
     }
   ]
 }

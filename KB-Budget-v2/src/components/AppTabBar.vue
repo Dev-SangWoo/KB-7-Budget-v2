@@ -1,11 +1,17 @@
 <script setup>
-import { House, ChartNoAxesColumn, Settings } from 'lucide-vue-next'
+import {
+  House,
+  CalendarDays,
+  ChartNoAxesColumn,
+  Settings,
+} from 'lucide-vue-next';
 
 const tabs = [
-  { name: 'home',     label: '가계',  icon: House },
-  { name: 'stats',    label: '통계',  icon: ChartNoAxesColumn },
-  { name: 'settings', label: '설정',  icon: Settings },
-]
+  { name: 'home', label: '가계', icon: House },
+  { name: 'calendar', label: '달력', icon: CalendarDays },
+  { name: 'stats', label: '통계', icon: ChartNoAxesColumn },
+  { name: 'settings', label: '설정', icon: Settings },
+];
 </script>
 
 <template>
@@ -20,7 +26,12 @@ const tabs = [
       <span class="tab-link__dot" aria-hidden="true" />
 
       <span class="tab-link__icon-wrap" aria-hidden="true">
-        <component :is="tab.icon" class="tab-icon" :size="24" :stroke-width="1.6" />
+        <component
+          :is="tab.icon"
+          class="tab-icon"
+          :size="24"
+          :stroke-width="1.6"
+        />
       </span>
 
       <span class="tab-link__label">{{ tab.label }}</span>
@@ -69,8 +80,7 @@ const tabs = [
   height: 5px;
   border-radius: 50%;
   background: var(--color-brand);
-  transition:
-    transform var(--dur-base) var(--ease-spring),
+  transition: transform var(--dur-base) var(--ease-spring),
     opacity var(--dur-base);
   opacity: 0;
 }
@@ -94,8 +104,7 @@ const tabs = [
 .tab-icon {
   width: 24px;
   height: 24px;
-  transition:
-    stroke-width var(--dur-base) var(--ease-smooth),
+  transition: stroke-width var(--dur-base) var(--ease-smooth),
     transform var(--dur-base) var(--ease-spring);
 }
 
