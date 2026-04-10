@@ -1,113 +1,131 @@
 <script setup>
-import { ref, watch, computed, nextTick } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useTransactionStore } from '@/stores/transaction'
-import { useCategoryStore } from '@/stores/category'
+import { ref, watch, computed, nextTick } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useTransactionStore } from '@/stores/transaction';
+import { useCategoryStore } from '@/stores/category';
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   /** 'date' | 'category' — 열릴 때 해당 블록으로 스크롤 */
   focusSection: { type: String, default: null },
-})
+});
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
-const transactionStore = useTransactionStore()
-const categoryStore = useCategoryStore()
-const { filterDateFrom, filterDateTo, filterCategoryNames } = storeToRefs(transactionStore)
-const { categories } = storeToRefs(categoryStore)
+const transactionStore = useTransactionStore();
+const categoryStore = useCategoryStore();
+const { filterDateFrom, filterDateTo, filterCategoryKeys } =
+  storeToRefs(transactionStore);
+const { categories } = storeToRefs(categoryStore);
 
-const draftFrom = ref('')
-const draftTo = ref('')
-const draftCategories = ref([])
+const draftFrom = ref('');
+const draftTo = ref('');
+const draftCategories = ref([]);
 
-const categoryNamesSorted = computed(() =>
-  [...categories.value].map((c) => c.name).sort((a, b) => a.localeCompare(b, 'ko')),
-)
+const incomeCategoryNames = computed(() =>
+  [...categories.value]
+    .filter((c) => c.type === 'income')
+    .map((c) => c.name)
+    .sort((a, b) => {
+      if (a === '기타') return 1; // 기타는 항상 뒤로
+      if (b === '기타') return -1;
+      return a.localeCompare(b, 'ko');
+    })
+);
+
+const expenseCategoryNames = computed(() =>
+  [...categories.value]
+    .filter((c) => c.type === 'expense')
+    .map((c) => c.name)
+    .sort((a, b) => {
+      if (a === '기타') return 1;
+      if (b === '기타') return -1;
+      return a.localeCompare(b, 'ko');
+    })
+);
 
 function syncDraftFromStore() {
-  draftFrom.value = filterDateFrom.value || ''
-  draftTo.value = filterDateTo.value || ''
-  draftCategories.value = [...filterCategoryNames.value]
+  draftFrom.value = filterDateFrom.value || '';
+  draftTo.value = filterDateTo.value || '';
+  draftCategories.value = [...filterCategoryKeys.value];
 }
 
-const sectionDateEl = ref(null)
-const sectionCategoryEl = ref(null)
+const sectionDateEl = ref(null);
+const sectionCategoryEl = ref(null);
 
 watch(
   () => props.modelValue,
   (open) => {
     if (open) {
-      syncDraftFromStore()
+      syncDraftFromStore();
       nextTick(() => {
         const el =
           props.focusSection === 'category'
             ? sectionCategoryEl.value
             : props.focusSection === 'date'
-              ? sectionDateEl.value
-              : null
-        el?.scrollIntoView({ block: 'start', behavior: 'smooth' })
-      })
+            ? sectionDateEl.value
+            : null;
+        el?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
     }
-  },
-)
+  }
+);
 
 function close() {
-  emit('update:modelValue', false)
+  emit('update:modelValue', false);
 }
 
-function toggleCategory(name) {
-  const i = draftCategories.value.indexOf(name)
-  if (i === -1) draftCategories.value = [...draftCategories.value, name]
-  else draftCategories.value = draftCategories.value.filter((_, idx) => idx !== i)
+// toggleCategory 수정
+function toggleCategory(type, name) {
+  const key = `${type}:${name}`;
+  const i = draftCategories.value.indexOf(key);
+  if (i === -1) draftCategories.value = [...draftCategories.value, key];
+  else
+    draftCategories.value = draftCategories.value.filter((_, idx) => idx !== i);
 }
 
 function setThisMonth() {
-  const now = new Date()
-  const y = now.getFullYear()
-  const m = String(now.getMonth() + 1).padStart(2, '0')
-  const lastDay = String(new Date(y, now.getMonth() + 1, 0).getDate()).padStart(2, '0')
-  draftFrom.value = `${y}-${m}-01`
-  draftTo.value = `${y}-${m}-${lastDay}`
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const lastDay = String(new Date(y, now.getMonth() + 1, 0).getDate()).padStart(
+    2,
+    '0'
+  );
+  draftFrom.value = `${y}-${m}-01`;
+  draftTo.value = `${y}-${m}-${lastDay}`;
 }
 
 function clearDates() {
-  draftFrom.value = ''
-  draftTo.value = ''
+  draftFrom.value = '';
+  draftTo.value = '';
 }
 
 function clearCategories() {
-  draftCategories.value = []
+  draftCategories.value = [];
 }
 
 function apply() {
   transactionStore.applyTransactionFilters({
     dateFrom: draftFrom.value || null,
     dateTo: draftTo.value || null,
-    categoryNames: draftCategories.value,
-  })
-  close()
+    categoryKeys: draftCategories.value, // "income:기타" 형태 그대로 넘김
+  });
+  close();
 }
 
 function resetAll() {
-  transactionStore.clearTransactionFilters()
-  syncDraftFromStore()
-  close()
+  transactionStore.clearTransactionFilters();
+  syncDraftFromStore();
+  close();
 }
 </script>
 
 <template>
   <Teleport to="body">
     <Transition name="filter-modal">
-      <div
-        v-if="modelValue"
-        class="filter-modal-root"
-        aria-hidden="false"
-      >
-        <div
-          class="filter-modal__backdrop"
-          @click="close"
-        />
+      <div v-if="modelValue" class="filter-modal-root" aria-hidden="false">
+        <div class="filter-modal__backdrop" @click="close" />
         <div
           class="filter-modal__sheet"
           role="dialog"
@@ -115,63 +133,126 @@ function resetAll() {
           aria-labelledby="filter-modal-title"
           @click.stop
         >
-            <div class="filter-modal__handle" aria-hidden="true" />
-            <h2 id="filter-modal-title" class="filter-modal__title">필터</h2>
+          <div class="filter-modal__handle" aria-hidden="true" />
+          <h2 id="filter-modal-title" class="filter-modal__title">필터</h2>
 
-            <div ref="sectionDateEl" class="filter-modal__section">
-              <div class="filter-modal__section-head">
-                <span class="filter-modal__label">기간</span>
-                <div class="filter-modal__quick">
-                  <button type="button" class="filter-modal__text-btn" @click="setThisMonth">
-                    이번 달
-                  </button>
-                  <button type="button" class="filter-modal__text-btn" @click="clearDates">
-                    기간 전체
-                  </button>
-                </div>
-              </div>
-              <div class="filter-modal__dates">
-                <label class="filter-modal__field">
-                  <span class="filter-modal__field-label">시작</span>
-                  <input v-model="draftFrom" type="date" class="filter-modal__input" />
-                </label>
-                <label class="filter-modal__field">
-                  <span class="filter-modal__field-label">종료</span>
-                  <input v-model="draftTo" type="date" class="filter-modal__input" />
-                </label>
-              </div>
-            </div>
-
-            <div ref="sectionCategoryEl" class="filter-modal__section filter-modal__section--scroll">
-              <div class="filter-modal__section-head">
-                <span class="filter-modal__label">카테고리</span>
-                <button type="button" class="filter-modal__text-btn" @click="clearCategories">
-                  선택 해제
+          <div ref="sectionDateEl" class="filter-modal__section">
+            <div class="filter-modal__section-head">
+              <span class="filter-modal__label">기간</span>
+              <div class="filter-modal__quick">
+                <button
+                  type="button"
+                  class="filter-modal__text-btn"
+                  @click="setThisMonth"
+                >
+                  이번 달
+                </button>
+                <button
+                  type="button"
+                  class="filter-modal__text-btn"
+                  @click="clearDates"
+                >
+                  기간 전체
                 </button>
               </div>
-              <p class="filter-modal__hint">선택하지 않으면 전체 카테고리가 표시됩니다.</p>
+            </div>
+            <div class="filter-modal__dates">
+              <label class="filter-modal__field">
+                <span class="filter-modal__field-label">시작</span>
+                <input
+                  v-model="draftFrom"
+                  type="date"
+                  class="filter-modal__input"
+                />
+              </label>
+              <label class="filter-modal__field">
+                <span class="filter-modal__field-label">종료</span>
+                <input
+                  v-model="draftTo"
+                  type="date"
+                  class="filter-modal__input"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div
+            ref="sectionCategoryEl"
+            class="filter-modal__section filter-modal__section--scroll"
+          >
+            <div class="filter-modal__section-head">
+              <span class="filter-modal__label">카테고리</span>
+              <button
+                type="button"
+                class="filter-modal__text-btn"
+                @click="clearCategories"
+              >
+                선택 해제
+              </button>
+            </div>
+            <p class="filter-modal__hint">
+              선택하지 않으면 전체 카테고리가 표시됩니다.
+            </p>
+            <div class="filter-modal__cat-group">
+              <span class="filter-modal__cat-label">수입</span>
+            </div>
+            <!-- 수입 칩 -->
+            <button
+              v-for="name in incomeCategoryNames"
+              :key="'income-' + name"
+              type="button"
+              class="filter-modal__chip filter-modal__chip--income"
+              :class="{
+                'filter-modal__chip--on': draftCategories.includes(
+                  'income:' + name
+                ),
+              }"
+              @click="toggleCategory('income', name)"
+            >
+              {{ name }}
+            </button>
+
+            <!-- 구분선 -->
+            <div class="filter-modal__divider" />
+
+            <!-- 지출 -->
+            <div class="filter-modal__cat-group">
+              <span class="filter-modal__cat-label">지출</span>
               <div class="filter-modal__chips">
                 <button
-                  v-for="name in categoryNamesSorted"
-                  :key="name"
+                  v-for="name in expenseCategoryNames"
+                  :key="'expense-' + name"
                   type="button"
                   class="filter-modal__chip"
-                  :class="{ 'filter-modal__chip--on': draftCategories.includes(name) }"
-                  @click="toggleCategory(name)"
+                  :class="{
+                    'filter-modal__chip--on': draftCategories.includes(
+                      'expense:' + name
+                    ),
+                  }"
+                  @click="toggleCategory('expense', name)"
                 >
                   {{ name }}
                 </button>
               </div>
             </div>
+          </div>
 
-            <div class="filter-modal__actions">
-              <button type="button" class="filter-modal__btn filter-modal__btn--ghost" @click="resetAll">
-                전체 초기화
-              </button>
-              <button type="button" class="filter-modal__btn filter-modal__btn--primary" @click="apply">
-                적용
-              </button>
-            </div>
+          <div class="filter-modal__actions">
+            <button
+              type="button"
+              class="filter-modal__btn filter-modal__btn--ghost"
+              @click="resetAll"
+            >
+              전체 초기화
+            </button>
+            <button
+              type="button"
+              class="filter-modal__btn filter-modal__btn--primary"
+              @click="apply"
+            >
+              적용
+            </button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -383,5 +464,34 @@ function resetAll() {
 .filter-modal-enter-from .filter-modal__sheet,
 .filter-modal-leave-to .filter-modal__sheet {
   transform: translateY(100%);
+}
+
+.filter-modal__cat-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.filter-modal__cat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.filter-modal__divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 0.75rem 0;
+}
+
+/* 수입 칩 선택 시 색상 (파란 계열로 구분) */
+.filter-modal__chip--income.filter-modal__chip--on {
+  border-color: rgba(59, 130, 246, 0.45);
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  font-weight: 700;
 }
 </style>
