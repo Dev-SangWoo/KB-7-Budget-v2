@@ -143,6 +143,33 @@
       "category": "기타",
       "memo": "df",
       "id": "elDhnxn"
+    },
+    {
+      "userId": "-ehQ2va",
+      "type": "expense",
+      "date": "2026-04-10",
+      "amount": 1212,
+      "category": "문화생활",
+      "memo": "",
+      "id": "_-TCgmT"
+    },
+    {
+      "userId": "-ehQ2va",
+      "type": "expense",
+      "date": "2026-04-10",
+      "amount": 3434,
+      "category": "선물",
+      "memo": "",
+      "id": "tEHzy41"
+    },
+    {
+      "userId": "-ehQ2va",
+      "type": "expense",
+      "date": "2026-04-10",
+      "amount": 3245,
+      "category": "주거/통신",
+      "memo": "",
+      "id": "O2nB6-h"
     }
   ],
   "categories": [
