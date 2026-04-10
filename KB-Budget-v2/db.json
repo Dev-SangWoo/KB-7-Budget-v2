@@ -317,6 +317,17 @@
       "username": "ㅇㅇ",
       "spendingType": "계획형",
       "id": "-ehQ2va"
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": [],
+      "loginId": "dd",
+      "password": "dd",
+      "username": "test",
+      "spendingType": null,
+      "id": "Nlf7vTb"
     }
   ]
 }
