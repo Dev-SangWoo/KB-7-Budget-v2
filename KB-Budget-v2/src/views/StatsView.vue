@@ -1,5 +1,4 @@
 <script setup>
-import Calendar from '@/components/Calendar.vue';
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTransactionStore } from '@/stores/transaction';
@@ -84,10 +83,6 @@ watch(selectedMonth, () => {
         :net-label="formatNetWon(netTotal)"
       />
     </section>
-
-    <section class="calendar-panel">
-      <Calendar v-model:month="selectedMonth" :show-month-nav="false" />
-    </section>
   </div>
 </template>
 
@@ -110,9 +105,5 @@ watch(selectedMonth, () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.calendar-panel {
-  margin-top: 0.25rem;
 }
 </style>
