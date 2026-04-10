@@ -100,15 +100,6 @@
       "id": "DF7NBlR"
     },
     {
-      "userId": "jKQN6Cd",
-      "type": "expense",
-      "date": "2026-04-09",
-      "amount": 12312,
-      "category": "문화생활",
-      "memo": "12312",
-      "id": "CWVwHHl"
-    },
-    {
       "userId": "1",
       "type": "expense",
       "date": "2026-04-09",
@@ -264,56 +255,6 @@
       "expectedIncome": null,
       "monthlyBudget": null,
       "fixedItems": []
-    },
-    {
-      "totalAmount": 0,
-      "expectedIncome": 12312,
-      "monthlyBudget": 11231,
-      "loginId": "12",
-      "password": "12",
-      "username": "12",
-      "spendingType": "계획형",
-      "fixedItems": [
-        {
-          "id": "1775712635041",
-          "name": "123",
-          "amount": 12312
-        }
-      ],
-      "id": "jKQN6Cd"
-    },
-    {
-      "totalAmount": 0,
-      "expectedIncome": null,
-      "monthlyBudget": null,
-      "loginId": "123",
-      "password": "123",
-      "username": "1233",
-      "spendingType": "플렉스형",
-      "fixedItems": [],
-      "id": "p_kmuHJ"
-    },
-    {
-      "totalAmount": 0,
-      "expectedIncome": null,
-      "monthlyBudget": null,
-      "fixedItems": [],
-      "loginId": "00",
-      "password": "00",
-      "username": "00",
-      "spendingType": "플렉스형",
-      "id": "4_XgQ5q"
-    },
-    {
-      "totalAmount": 0,
-      "expectedIncome": null,
-      "monthlyBudget": null,
-      "fixedItems": [],
-      "loginId": "1234",
-      "password": "1234",
-      "username": "1234",
-      "spendingType": null,
-      "id": "jIorRpy"
     }
   ]
 }
