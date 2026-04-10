@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
@@ -26,6 +26,46 @@ const editBudget = ref('');
 const editFixedItems = ref([]);
 const isSaving = ref(false);
 const saveSuccess = ref(false);
+const creditTapCount = ref(0);
+const isEasterEggActive = ref(false);
+const easterEggDrops = ref([]);
+let easterEggTimer = null;
+
+const EASTER_EGG_TARGET = 26;
+const EASTER_EGG_DURATION = 6000;
+
+function makeDrop(idx) {
+  const images = [imgPlan, imgFlex, imgSocial, imgDrizzle];
+  return {
+    id: `${Date.now()}-${idx}`,
+    src: images[idx % images.length],
+    left: `${Math.random() * 92}%`,
+    size: `${48 + Math.random() * 28}px`,
+    delay: `${Math.random() * 0.9}s`,
+    duration: `${2.8 + Math.random() * 2.1}s`,
+    rotate: `${-20 + Math.random() * 40}deg`,
+  };
+}
+
+function triggerEasterEgg() {
+  if (easterEggTimer) clearTimeout(easterEggTimer);
+  easterEggDrops.value = Array.from({ length: 24 }, (_, idx) => makeDrop(idx));
+  isEasterEggActive.value = true;
+  easterEggTimer = setTimeout(() => {
+    isEasterEggActive.value = false;
+    easterEggDrops.value = [];
+    easterEggTimer = null;
+  }, EASTER_EGG_DURATION);
+}
+
+function handleCreditCardTap() {
+  if (isEasterEggActive.value) return;
+  creditTapCount.value += 1;
+  if (creditTapCount.value >= EASTER_EGG_TARGET) {
+    creditTapCount.value = 0;
+    triggerEasterEgg();
+  }
+}
 
 function cloneItems(items) {
   if (!Array.isArray(items) || items.length === 0) return [];
@@ -125,10 +165,32 @@ function formatAmount(val) {
   if (isNaN(num) || num === 0) return '';
   return new Intl.NumberFormat('ko-KR').format(num) + '원';
 }
+
+onBeforeUnmount(() => {
+  if (easterEggTimer) clearTimeout(easterEggTimer);
+});
 </script>
 
 <template>
   <section class="settings-page">
+    <div v-if="isEasterEggActive" class="easter-layer" aria-hidden="true">
+      <img
+        v-for="drop in easterEggDrops"
+        :key="drop.id"
+        class="easter-drop"
+        :src="drop.src"
+        alt=""
+        :style="{
+          left: drop.left,
+          width: drop.size,
+          height: drop.size,
+          animationDelay: drop.delay,
+          animationDuration: drop.duration,
+          '--drop-rotate': drop.rotate,
+        }"
+      />
+    </div>
+
     <h2 class="page-title">설정</h2>
 
     <!-- 내 정보 카드 -->
@@ -300,6 +362,15 @@ function formatAmount(val) {
       </template>
     </button>
 
+    <!-- 제작자 정보 -->
+    <button class="credit-card" type="button" @click="handleCreditCardTap">
+      <p class="credit-card__title">KB IT&apos;s Your Life 7기</p>
+      <p class="credit-card__line">기간: 04.07. ~ 04.13.</p>
+      <p class="credit-card__line">기술: Vue · json-server · GitHub · Docker · Docker Hub · AWS EC2</p>
+      <p class="credit-card__line">팀원: 김기선 · 이아영 · 이지은 · 황지원 · 홍상우</p>
+      <p class="credit-card__hint">힌트: 제작자 카드를 여러 번 눌러보세요 👀</p>
+    </button>
+
     <!-- 로그아웃 -->
     <button class="logout-btn" @click="handleLogout">
       <LogOut :size="16" :stroke-width="2" />
@@ -310,6 +381,7 @@ function formatAmount(val) {
 
 <style scoped>
 .settings-page {
+  position: relative;
   max-width: 420px;
   margin: 0 auto;
   padding: 1rem 1rem 6rem;
@@ -327,6 +399,41 @@ function formatAmount(val) {
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+/* ── 이스터에그 ── */
+.easter-layer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(100vw, 420px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.easter-drop {
+  position: absolute;
+  top: -4rem;
+  object-fit: contain;
+  animation-name: drop-character;
+  animation-timing-function: linear;
+}
+
+@keyframes drop-character {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(112vh) rotate(var(--drop-rotate));
+    opacity: 1;
+  }
 }
 
 /* ── 카드 ── */
@@ -673,6 +780,46 @@ function formatAmount(val) {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ── 제작자 정보 ── */
+.credit-card {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  margin-top: 0.125rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  background: var(--color-bg);
+}
+
+.credit-card:active {
+  transform: scale(0.998);
+}
+
+.credit-card__title {
+  margin: 0 0 0.2rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.credit-card__line {
+  margin: 0;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.credit-card__hint {
+  margin: 0.24rem 0 0;
+  font-size: 0.58rem;
+  line-height: 1.3;
+  color: var(--color-text-secondary);
+  text-align: right;
 }
 
 /* ── 로그아웃 ── */

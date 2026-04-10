@@ -17,21 +17,44 @@ const { monthlyBudget, currentMonth } = storeToRefs(budgetStore)
 /* 예산 편집 상태 */
 const isEditing = ref(false)
 const editValue = ref('')
+const isSavingBudget = ref(false)
+const saveError = ref('')
 
 function openEdit() {
   editValue.value = String(monthlyBudget.value)
+  saveError.value = ''
   isEditing.value = true
 }
 
-function saveEdit() {
-  const num = Number(editValue.value.replace(/,/g, ''))
-  if (!isNaN(num) && num > 0) {
-    budgetStore.setBudget(num)
+async function saveEdit() {
+  if (isSavingBudget.value) return
+
+  const raw = String(editValue.value ?? '').trim()
+  const num = Number(raw.replace(/,/g, ''))
+
+  if (!Number.isFinite(num) || num <= 0) {
+    saveError.value = '1원 이상 숫자를 입력해주세요.'
+    return
   }
+
+  saveError.value = ''
+  isSavingBudget.value = true
+
+  budgetStore.setBudget(num)
   isEditing.value = false
+
+  try {
+    const ok = await userStore.updateProfile({ monthlyBudget: num })
+    if (!ok) {
+      saveError.value = '서버 저장에 실패했어요. 다시 시도해주세요.'
+    }
+  } finally {
+    isSavingBudget.value = false
+  }
 }
 
 function cancelEdit() {
+  saveError.value = ''
   isEditing.value = false
 }
 
@@ -194,9 +217,17 @@ watch(currentUser, () => budgetStore.init())
               />
               <span class="bp-modal-input-unit">원</span>
             </div>
+            <p v-if="saveError" class="bp-modal-error">{{ saveError }}</p>
             <div class="bp-modal-actions">
-              <button class="bp-modal-btn bp-modal-btn--cancel" @click="cancelEdit">취소</button>
-              <button class="bp-modal-btn bp-modal-btn--save" @click="saveEdit">저장</button>
+              <button type="button" class="bp-modal-btn bp-modal-btn--cancel" @click="cancelEdit">취소</button>
+              <button
+                type="button"
+                class="bp-modal-btn bp-modal-btn--save"
+                :disabled="isSavingBudget"
+                @click.stop.prevent="saveEdit"
+              >
+                {{ isSavingBudget ? '저장 중...' : '저장' }}
+              </button>
             </div>
           </div>
         </div>
@@ -489,6 +520,13 @@ watch(currentUser, () => budgetStore.init())
   gap: 0.6rem;
 }
 
+.bp-modal-error {
+  margin: -0.55rem 0 0.8rem;
+  font-size: 0.74rem;
+  color: #ef4444;
+  font-weight: 600;
+}
+
 .bp-modal-btn {
   flex: 1;
   padding: 0.85rem;
@@ -518,6 +556,12 @@ watch(currentUser, () => budgetStore.init())
 
 .bp-modal-btn--save:hover {
   filter: brightness(1.05);
+}
+
+.bp-modal-btn--save:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: none;
 }
 
 /* ── 트랜지션 ── */
