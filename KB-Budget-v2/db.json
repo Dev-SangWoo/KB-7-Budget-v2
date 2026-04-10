@@ -292,6 +292,17 @@
       "expectedIncome": null,
       "monthlyBudget": null,
       "fixedItems": []
+    },
+    {
+      "totalAmount": 0,
+      "expectedIncome": null,
+      "monthlyBudget": null,
+      "fixedItems": [],
+      "loginId": "ddd",
+      "password": "ddd",
+      "username": "ㅇㅇ",
+      "spendingType": "계획형",
+      "id": "-ehQ2va"
     }
   ]
 }
