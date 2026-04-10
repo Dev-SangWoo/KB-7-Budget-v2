@@ -1,5 +1,5 @@
 # 1. Vue 빌드
-FROM node:18 AS builder
+FROM node:20 AS builder
 WORKDIR /app
 COPY . .
 RUN npm install --legacy-peer-deps
