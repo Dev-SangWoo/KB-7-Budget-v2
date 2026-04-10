@@ -11,20 +11,21 @@ export const useTransactionStore = defineStore('transaction', () => {
   const filterDateFrom = ref(null);
   const filterDateTo = ref(null);
   /** 비어 있으면 카테고리 제한 없음. 값이 있으면 해당 이름만 */
-  const filterCategoryNames = ref([]);
+  const filterCategoryKeys = ref([]);
 
   const filteredTransactions = computed(() =>
     transactions.value.filter((tx) => {
       if (filterDateFrom.value && tx.date < filterDateFrom.value) return false;
       if (filterDateTo.value && tx.date > filterDateTo.value) return false;
-      if (
-        filterCategoryNames.value.length > 0 &&
-        !filterCategoryNames.value.includes(tx.category)
-      ) {
-        return false;
+      if (filterCategoryKeys.value.length > 0) {
+        const matched = filterCategoryKeys.value.some((key) => {
+          const [type, name] = key.split(':');
+          return tx.type === type && tx.category === name;
+        });
+        if (!matched) return false;
       }
       return true;
-    }),
+    })
   );
 
   const sortedByDateDesc = computed(() =>
@@ -34,7 +35,7 @@ export const useTransactionStore = defineStore('transaction', () => {
       return String(b.id).localeCompare(String(a.id), undefined, {
         numeric: true,
       });
-    }),
+    })
   );
 
   /** 날짜 내림차순 섹션: 같은 날짜 거래는 함께 묶음 */
@@ -52,25 +53,23 @@ export const useTransactionStore = defineStore('transaction', () => {
   });
 
   const hasDateFilter = computed(
-    () => filterDateFrom.value != null || filterDateTo.value != null,
+    () => filterDateFrom.value != null || filterDateTo.value != null
   );
 
-  const hasCategoryFilter = computed(
-    () => filterCategoryNames.value.length > 0,
-  );
+  const hasCategoryFilter = computed(() => filterCategoryKeys.value.length > 0);
 
-  function applyTransactionFilters({ dateFrom, dateTo, categoryNames }) {
+  function applyTransactionFilters({ dateFrom, dateTo, categoryKeys }) {
     filterDateFrom.value = dateFrom || null;
     filterDateTo.value = dateTo || null;
-    filterCategoryNames.value = Array.isArray(categoryNames)
-      ? [...categoryNames]
+    filterCategoryKeys.value = Array.isArray(categoryKeys)
+      ? [...categoryKeys]
       : [];
   }
 
   function clearTransactionFilters() {
     filterDateFrom.value = null;
     filterDateTo.value = null;
-    filterCategoryNames.value = [];
+    filterCategoryKeys.value = [];
   }
 
   function setTransactions(rows) {
@@ -108,7 +107,7 @@ export const useTransactionStore = defineStore('transaction', () => {
   async function updateTransaction(id, payload) {
     const updated = await txApi.updateTransaction(id, { ...payload, id });
     const idx = transactions.value.findIndex(
-      (t) => String(t.id) === String(id),
+      (t) => String(t.id) === String(id)
     );
     if (idx !== -1) {
       const next = [...transactions.value];
@@ -121,7 +120,7 @@ export const useTransactionStore = defineStore('transaction', () => {
   async function removeTransaction(id) {
     await txApi.deleteTransaction(id);
     transactions.value = transactions.value.filter(
-      (t) => String(t.id) !== String(id),
+      (t) => String(t.id) !== String(id)
     );
   }
 
@@ -130,7 +129,6 @@ export const useTransactionStore = defineStore('transaction', () => {
     loadError,
     filterDateFrom,
     filterDateTo,
-    filterCategoryNames,
     filteredTransactions,
     sortedByDateDesc,
     groupedByDateDesc,
@@ -144,5 +142,6 @@ export const useTransactionStore = defineStore('transaction', () => {
     createTransaction,
     updateTransaction,
     removeTransaction,
+    filterCategoryKeys,
   };
 });
