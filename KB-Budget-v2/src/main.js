@@ -1,13 +1,20 @@
-import { createApp } from 'vue'
+import { createApp } from "vue";
 
-import './assets/theme.css'
-import App from './App.vue'
-import router from './router'
-import { createAppPinia } from './plugins/pinia.js'
+import "./assets/theme.css";
+import App from "./App.vue";
+import router from "./router";
+import { createAppPinia } from "./plugins/pinia.js";
+import { createGtag } from "vue-gtag";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createAppPinia())
-app.use(router)
+const gtag = createGtag({
+  tagId: "GTM-NC4Q9LWD",
+  router,
+});
 
-app.mount('#app')
+app.use(createAppPinia());
+app.use(router);
+app.use(gtag);
+
+app.mount("#app");
