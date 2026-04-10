@@ -38,17 +38,19 @@ const currentMonthTransactions = computed(() => {
   return items;
 });
 
-// 나를 위한 거래 (경조사/회비 제외, 현재 달만)
+const OTHERS_CATEGORIES = ['경조사/회비', '선물', '기부'];
+
+// 나를 위한 거래 (타인 카테고리 제외, 현재 달만)
 const meTransactions = computed(() => {
   return currentMonthTransactions.value.filter(
-    (tx) => tx.category !== '경조사/회비',
+    (tx) => !OTHERS_CATEGORIES.includes(tx.category),
   );
 });
 
-// 타인을 위한 거래 (경조사/회비만, 현재 달만)
+// 타인을 위한 거래 (타인 카테고리만, 현재 달만)
 const othersTransactions = computed(() => {
   return currentMonthTransactions.value.filter(
-    (tx) => tx.category === '경조사/회비',
+    (tx) => OTHERS_CATEGORIES.includes(tx.category),
   );
 });
 

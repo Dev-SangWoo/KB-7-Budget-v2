@@ -75,7 +75,7 @@ const filteredGroupedData = computed(() => {
   return currentMonthData.value
     .map((group) => {
       const filteredItems = group.items.filter((tx) => {
-        const isOthers = tx.category === '경조사/회비';
+        const isOthers = ['경조사/회비', '선물', '기부'].includes(tx.category);
         return socialFilterMode.value === 'others' ? isOthers : !isOthers;
       });
       return { ...group, items: filteredItems };
