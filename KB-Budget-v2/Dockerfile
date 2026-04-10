@@ -2,7 +2,7 @@
 FROM node:18 AS builder
 WORKDIR /app
 COPY . .
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build
 
 # 2. 실행용
@@ -22,7 +22,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # json 데이터
 WORKDIR /app
-COPY db.json ./KB-Budget-v2
+COPY db.json .
 
 # 실행
 CMD sh -c "json-server --watch db.json --port 3000 & nginx -g 'daemon off;'"
