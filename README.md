@@ -1,73 +1,66 @@
-# KB-7-Budget-v2
+# 💸 소비 유형 기반 가계부 [씀씀]
 
-KB IT's Your Life 7기 - 26회차, 가계부 스켈레톤 프로젝트 v2
+사용자 소비 유형 기반 맞춤형 UI와 수입/지출 기록, 분석을 제공하는 웹 가계부 애플리케이션
 
-## 📌 1. 이슈 (Issue) 규칙
+---
 
-작업을 시작하기 전, 내가 '무엇을 할 것인지' 명확히 알리기 위해 작성합니다.
+## 🔗 링크
 
-    제목 양식: [말머리] 작업 내용 요약
+- Repo: https://github.com/Dev-SangWoo/KB-7-Budget-v2
+- Demo: http://ssmssm.duckdns.org/
 
-    말머리 종류 (4가지만 사용):
+---
 
-    [Feature] : 새로운 기능 추가 (Vue 컴포넌트 생성 등)
+## 👥 팀원
+| <a href="https://github.com/Dev-SangWoo"><img src="https://github.com/Dev-SangWoo.png" width="80" /></a> | <a href="https://github.com/KSBoscoKim"><img src="https://github.com/KSBoscoKim.png" width="80" /></a> | <a href="https://github.com/Jiwon-0326"><img src="https://github.com/Jiwon-0326.png" width="80" /></a> | <a href="https://github.com/Ahyoung00"><img src="https://github.com/Ahyoung00.png" width="80" /></a> | <a href="https://github.com/JIEUN223"><img src="https://github.com/JIEUN223.png" width="80" /></a> |
+|:--:|:--:|:--:|:--:|:--:|
+| [홍상우]([https://github.com/ID1](https://github.com/Dev-SangWoo)) | [김기선]([https://github.com/ID2](https://github.com/KSBoscoKim)) | [황지원](https://github.com/Jiwon-0326) | [이아영]([https://github.com/ID4](https://github.com/Ahyoung00)) | [이지은](https://github.com/JIEUN223) |
+| FE | FE | FE | FE | FE |
 
-    [Bug] : 버그 및 오류 수정
+---
 
-    [UI/UX] : 화면 퍼블리싱, CSS 스타일링
+## 🖥️ 화면
 
-    [Setting] : 패키지 설치, 라우터 세팅 등 인프라 작업
+| 기능 | 화면 |
+|------|------|
+| 소비 유형 분석 | <img width="200" height="400" alt="2-설문조사" src="https://github.com/user-attachments/assets/f081b1f5-3485-42fb-96ba-3e778db9f56f" /><img width="200" height="400" alt="3-분석완료" src="https://github.com/user-attachments/assets/8d4956a0-a189-45f8-a800-4745d79c9598" />|
+| 메인 | <img width="200" height="400" alt="5-가계부화면(플렉스형)" src="https://github.com/user-attachments/assets/88583a16-f179-4d02-84bb-b2a9d7fe6e9e" /><img width="200" height="400" alt="4-가계부화면(계획형)" src="https://github.com/user-attachments/assets/473c265e-d7b9-43f4-94e1-076cc91e1a06" /> |
+| 달력 및  통계 | <img width="200" height="400" alt="8-달력화면" src="https://github.com/user-attachments/assets/b5068388-e3a8-40f6-afa9-8dbb4246b5da" /> <img width="200" height="400" alt="9-통계화면" src="https://github.com/user-attachments/assets/3bfaf1c2-bf2b-4c49-97f5-b0ee68ac3651" /> |
+| 소비 유형 | <img width="200" height="200" alt="KakaoTalk_Photo_2026-04-10-17-31-31-4" src="https://github.com/user-attachments/assets/696c9cef-3d6b-4aa3-927a-e503d355fe16" /> <img width="200" height="200" alt="KakaoTalk_Photo_2026-04-10-17-31-31-3" src="https://github.com/user-attachments/assets/f18bdc40-23e1-464f-8b7e-74c316c53e78" /> <img width="200" height="200" alt="KakaoTalk_Photo_2026-04-10-17-31-31-1" src="https://github.com/user-attachments/assets/c8946869-f683-49de-9b77-78d92377651c" /> <img width="200" height="200" alt="KakaoTalk_Photo_2026-04-13-11-02-31" src="https://github.com/user-attachments/assets/4b625462-060f-49a7-a095-ed770b530b1f" /> |
 
-    제목 예시: [Feature] 가계부 지출 입력 폼 컴포넌트 구현
+---
 
-    본문: 거창할 필요 없이 "어떤 작업을 할 건지" 1~2줄로 짧게 적거나 체크리스트(- [ ])만 남겨도 충분합니다.
+## ✨ 주요 기능
 
-## 💻 2. 커밋 (Commit) 규칙
+- 수입 / 지출 기록 (날짜, 금액, 카테고리, 메모)
+- 거래 내역 조회 및 필터링
+- 리스트 / 달력 뷰 제공
+- 월별 수입·지출 요약
+- 소비 유형 분석 및 피드백
 
-다른 팀원이 커밋 로그만 보고도 어떤 코드를 건드렸는지 한눈에 파악할 수 있게 적습니다.
+---
 
-제목 양식: 타입: 커밋 메시지 (#이슈번호)
+## 🛠️ 기술 스택
 
-타입 종류 (5가지만 통일!):
+**Frontend**
+- Vue 3
+- Vue Router
+- Pinia
+- Axios
 
-feat : 새로운 기능 추가, 컴포넌트 생성
+**Backend**
+- json-server (Mock API)
 
-fix : 버그 수정
+---
 
-style : CSS, 마크업 등 UI 스타일 변경 (로직 수정 없음)
+## 🚀 실행 방법
 
-refactor : 코드 리팩토링 (기능 변화 없이 코드 구조만 개선)
+```bash
+git clone https://github.com/Dev-SangWoo/KB-7-Budget-v2.git
+cd KB-7-Budget-v2
 
-chore : 패키지 설치, 빌드 설정, 불필요한 파일 삭제 등
+npm install
+npm run dev
 
-제목 예시: feat: 금액 입력 시 세자리 콤마 자동 생성 로직 추가 (#1)
-
-## 🚀 3. PR (Pull Request) 규칙
-
-내가 작업한 코드를 팀의 메인 브랜치(또는 dev 브랜치)에 합쳐달라고 요청할 때 작성합니다.
-
-제목 양식: [말머리] 작업 내용 요약 (#이슈번호)
-
-커밋, PR 규칙과 통일감을 주어 헷갈리지 않게 사용할 수 있는 초간단 브랜치 네이밍 규칙입니다.
-
-브랜치 이름은 터미널 오류를 방지하기 위해 '영어 소문자'와 '하이픈(-)' 조합으로 작성하는 것을 강력히 권장합니다.
-
-## 🌿4. 브랜치명 작성 규칙
-
-기본 양식: 타입-기능명/#이슈번호/이름
-
-타입 (커밋 타입과 동일하게 5개만 사용):
-
-feat/ : 기능 개발
-
-fix/ : 버그 수정
-
-style/ : UI/UX, CSS 퍼블리싱 작업
-
-refactor/ : 코드 리팩토링
-
-chore/ : 세팅, 패키지 설치 등
-
-💡 브랜치명 작성 예시
-기능을 개발할 때 (이슈 번호 12번):
-👉 feat-homeView/#12/이름
+# mock server
+npx json-server --watch db.json --port 3000
