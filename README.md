@@ -14,7 +14,7 @@
 ## 👥 팀원
 | <a href="https://github.com/Dev-SangWoo"><img src="https://github.com/Dev-SangWoo.png" width="80" /></a> | <a href="https://github.com/KSBoscoKim"><img src="https://github.com/KSBoscoKim.png" width="80" /></a> | <a href="https://github.com/Jiwon-0326"><img src="https://github.com/Jiwon-0326.png" width="80" /></a> | <a href="https://github.com/Ahyoung00"><img src="https://github.com/Ahyoung00.png" width="80" /></a> | <a href="https://github.com/JIEUN223"><img src="https://github.com/JIEUN223.png" width="80" /></a> |
 |:--:|:--:|:--:|:--:|:--:|
-| [홍상우]([https://github.com/ID1](https://github.com/Dev-SangWoo)) | [김기선]([https://github.com/ID2](https://github.com/KSBoscoKim)) | [황지원](https://github.com/Jiwon-0326) | [이아영]([https://github.com/ID4](https://github.com/Ahyoung00)) | [이지은](https://github.com/JIEUN223) |
+| [홍상우](https://github.com/Dev-SangWoo) | [김기선](https://github.com/KSBoscoKim) | [황지원](https://github.com/Jiwon-0326) | [이아영](https://github.com/Ahyoung00) | [이지은](https://github.com/JIEUN223) |
 | FE | FE | FE | FE | FE |
 
 ---
